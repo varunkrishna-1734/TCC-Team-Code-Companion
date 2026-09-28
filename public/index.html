@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TCC – Team Code Companion</title>
+<style>
+:root{--bg:#f6f8fc;--card:#fff;--ink:#1c2333;--muted:#5d6b82;--line:#e1e7f0;--blue:#2563eb;--pink:#e11d74;--orange:#ea6a0a;--teal:#0d9488;--purple:#7c3aed;--green:#16a34a;--high:#dc2626;--medium:#d97706;--low:#2563eb;font-family:"Inter","Segoe UI","Helvetica Neue",Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px}
+button{font:inherit;cursor:pointer}:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px}
+.blue{color:var(--blue)}.pink{color:var(--pink)}.orange{color:var(--orange)}.teal{color:var(--teal)}.purple{color:var(--purple)}.green{color:var(--green)}.muted{color:var(--muted)}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.side{background:#fff;border-right:1px solid var(--line);padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+.mark{font-weight:800;font-size:1.7rem;letter-spacing:.5px;padding:0 10px 2px;background:linear-gradient(90deg,var(--blue),var(--pink),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{padding:0 10px 18px;color:var(--muted);font-size:.8rem}
+.side button{text-align:left;border:0;background:none;padding:10px 12px;border-radius:10px;font-weight:600;color:var(--muted)}
+.side button:hover{background:#f0f4fb}.side button.on{background:#eaf1ff;color:var(--blue)}
+main{padding:28px 4vw 60px;max-width:1150px;width:100%}
+h1{margin:0 0 4px;font-size:1.9rem;letter-spacing:-.5px}h2{margin:0 0 12px;font-size:1.15rem}
+.sub{color:var(--muted);margin:0 0 22px}
+.view{display:none}.view.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:start}
+.num{font-size:2rem;font-weight:800;line-height:1.1}.lbl{color:var(--muted);font-size:.85rem}
+.btn{padding:9px 18px;border-radius:9px;border:1px solid var(--line);background:#fff;font-weight:600}.btn:hover{border-color:var(--blue);color:var(--blue)}
+.btn.p{background:var(--blue);border-color:var(--blue);color:#fff}.btn.p:hover{background:#1d4ed8;color:#fff}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}
+.editor{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fbfcfe}
+.gut{padding:12px 8px;text-align:right;color:#9aa6bb;background:#f1f4fa;font:13px/1.6 ui-monospace,Consolas,monospace;overflow:hidden;white-space:pre;user-select:none;min-width:38px}
+#code{flex:1;min-height:380px;height:380px;border:0;padding:12px;font:13px/1.6 ui-monospace,Consolas,monospace;background:transparent;color:var(--ink);resize:vertical;white-space:pre;overflow:auto}
+#code:focus{outline:none}
+.badge{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.78rem;font-weight:700;background:#eef2fa}
+.badge.high{background:#fde8e8;color:var(--high)}.badge.medium{background:#fdf1dc;color:var(--medium)}.badge.low{background:#e4edff;color:var(--low)}.badge.mem{background:#f1e9ff;color:var(--purple)}.badge.ok{background:#dcf5e5;color:var(--green)}
+.tabs{display:flex;gap:6px;margin:14px 0}.tabs button{border:1px solid var(--line);background:#fff;padding:7px 16px;border-radius:99px;font-weight:600;color:var(--muted)}.tabs button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.f{border-left:5px solid var(--low);margin-bottom:14px}.f.high{border-left-color:var(--high)}.f.medium{border-left-color:var(--medium)}
+.f .t{display:flex;justify-content:space-between;gap:8px;font-weight:700;flex-wrap:wrap}
+pre{margin:8px 0;padding:8px 12px;background:#f3f5fa;border-radius:8px;font:12.5px/1.5 ui-monospace,Consolas,monospace;overflow-x:auto;white-space:pre}
+pre.old{background:#fff0f0}pre.new{background:#ecfaf1}
+.f p{margin:4px 0;color:var(--muted)}.f p b{color:var(--ink)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.acts button{padding:6px 13px;border-radius:8px;border:1px solid var(--line);background:#fff;font-weight:600;font-size:.85rem}
+.acts .a:hover{border-color:var(--green);color:var(--green)}.acts .r:hover,.acts .m:hover{border-color:var(--pink);color:var(--pink)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);font-size:.92rem}th{color:var(--muted);font-weight:600}
+.cmp{font:12.5px/1.6 ui-monospace,Consolas,monospace;display:grid;grid-template-columns:1fr 1fr;overflow-x:auto}
+.cmp div{padding:0 10px;white-space:pre;min-height:20px;border-bottom:1px solid #f0f3f8}.cmp .h{font-family:inherit;font-weight:700;background:#f3f5fa;padding:8px 10px}
+.cmp .d{background:#fff0f0}.cmp .n{background:#ecfaf1}
+.bar{display:flex;align-items:center;gap:10px;margin:8px 0}.bar span{width:70px;color:var(--muted);font-size:.85rem}.bar i{display:block;height:14px;border-radius:7px;min-width:4px}
+input,select{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;width:100%}
+.form{display:grid;gap:9px;margin:10px 0}.err{color:var(--high);min-height:1.2em;margin:0}
+ul.l{list-style:none;padding:0;margin:8px 0}ul.l li{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+ul.l button,.lnk{border:0;background:none;color:var(--blue);font-weight:600}
+.empty{color:var(--muted);padding:10px 0}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:9}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:800px){.app{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center}.tag{display:none}.mark{padding:0 8px 0 0}}
+
+/* dynamic buttons */
+button{position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s,background-position .4s,color .18s,border-color .18s,background-color .18s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(37,99,235,.18)}
+.btn:active,.acts button:active,.tabs button:active{transform:scale(.95)}
+.btn.p{background:linear-gradient(110deg,var(--blue),var(--purple),var(--pink),var(--blue));background-size:300% 100%;border:0}
+.btn.p:hover{background-position:100% 0;box-shadow:0 8px 22px rgba(124,58,237,.35);color:#fff}
+#run{animation:glow 2.2s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.45)}50%{box-shadow:0 0 0 9px rgba(124,58,237,0)}}
+.side button{border-left:4px solid transparent}
+.side button:hover{transform:translateX(4px);background:#f0f4fb;color:var(--ink)}
+.side button.on{border-left-color:var(--blue)}
+.tabs button:hover{transform:translateY(-2px);border-color:var(--blue);color:var(--blue)}.tabs button.on:hover{color:#fff}
+.acts button:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(28,35,51,.12)}
+.acts .a:hover{background:var(--green);color:#fff;border-color:var(--green)}
+.acts .r:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+.acts .m:hover{background:var(--pink);color:#fff;border-color:var(--pink)}
+.lnk:hover,ul.l button:hover{text-decoration:underline;transform:translateX(2px)}
+.card{transition:transform .2s,box-shadow .2s}.g4 .card:hover,.f:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(28,35,51,.08)}
+.rip{position:absolute;border-radius:50%;background:rgba(255,255,255,.55);transform:scale(0);animation:rip .6s ease-out;pointer-events:none}
+.acts .rip,.tabs .rip,.side .rip,.lnk .rip{background:rgba(37,99,235,.25)}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+.fab{position:fixed;right:24px;bottom:24px;z-index:8;padding:13px 22px;border-radius:99px;border:0;color:#fff;font-weight:700;background:linear-gradient(110deg,var(--orange),var(--pink),var(--purple));background-size:200% 100%;box-shadow:0 8px 24px rgba(225,29,116,.35)}
+.fab:hover{transform:translateY(-4px) scale(1.04);background-position:100% 0}
+.fab.hide{display:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side"><div class="mark">TCC</div><div class="tag">Team Code Companion</div>
+<button data-v="dashboard">Dashboard</button><button data-v="workspace">Review workspace</button><button data-v="results">Review results</button><button data-v="history">Review history</button><button data-v="memory">Memory</button></aside>
+<main>
+<section id="v-dashboard" class="view"></section>
+<section id="v-workspace" class="view">
+ <h1 class="purple">Code review workspace</h1><p class="sub">Paste code. TCC detects the language and reviews it using what your team taught it.</p>
+ <div class="card">
+  <div class="row sp"><div class="row"><b>Editor</b><span class="badge" id="lang">Language: waiting</span></div>
+  <div class="row"><button class="lnk" id="s-js">JS sample</button><button class="lnk" id="s-py">Python sample</button></div></div><br>
+  <div class="editor"><div class="gut" id="gut">1</div><textarea id="code" spellcheck="false" placeholder="Paste your code here..."></textarea></div>
+  <div class="row" style="margin-top:14px"><button class="btn p" id="run">&#9654; Run AI review</button><button class="btn" id="clear">&#10005; Clear</button></div>
+ </div>
+</section>
+<section id="v-results" class="view"></section>
+<section id="v-history" class="view"></section>
+<section id="v-memory" class="view"></section>
+</main></div>
+<button class="fab" id="fab" data-v="workspace">+ New review</button>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s),KEY='tcc-v2';
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let mem={reviews:[],muted:[],accepted:{},rejected:{},seen:{},custom:[],log:[]};
+try{Object.assign(mem,JSON.parse(localStorage.getItem(KEY))||{})}catch(e){}
+let syncT=null,inflight=false;
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}clearTimeout(syncT);syncT=setTimeout(push,400)};
+async function push(){if(inflight){syncT=setTimeout(push,400);return}inflight=true;
+ try{const r=await fetch('/api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(mem)});if(!r.ok)throw new Error(r.status);push.warned=false}
+ catch(e){if(!push.warned){push.warned=true;toast('Server unreachable. Changes are kept in this browser and will sync on the next change.')}}
+ finally{inflight=false}}
+const emptyMem=()=>({reviews:[],muted:[],accepted:{},rejected:{},seen:{},custom:[],log:[]});
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2400)};
+const JS=['JavaScript','TypeScript'];
+const RULES=[
+{id:'var',name:'Use let or const',sev:'medium',langs:JS,re:/\bvar\s+\w+/,msg:'var is function-scoped and hoisted, which causes surprising bugs.',fix:l=>l.replace(/\bvar\b/,'const')},
+{id:'eqeq',name:'Use strict equality',sev:'medium',langs:JS,re:/[^=!<>]==[^=]|!=[^=]/,msg:'Loose equality coerces types, so 0 == "" is true.',fix:l=>l.replace(/([^=!<>])==(?!=)/g,'$1===').replace(/!=(?!=)/g,'!==')},
+{id:'console',name:'Remove console.log',sev:'low',langs:JS,re:/console\.(log|debug)\(/,msg:'Debug logs leak data and clutter production output.',fix:()=>null},
+{id:'todo',name:'TODO without owner',sev:'low',re:/(TODO|FIXME)(?!\s*\()/,msg:'Unowned TODOs are never done. Add a name or ticket.',fix:l=>l.replace(/(TODO|FIXME)/,'$1(owner)')},
+{id:'eval',name:'Avoid eval',sev:'high',langs:JS.concat('Python'),re:/\beval\(|new Function\(/,msg:'eval runs arbitrary code, a direct injection risk. Parse data with JSON.parse or a safe parser instead.'},
+{id:'secret',name:'Hardcoded secret',sev:'high',re:/(password|secret|api[_-]?key|token)\s*[:=]\s*['"][^'"]{4,}['"]/i,msg:'Secrets in source end up in git history and logs. Load them from the environment.',fix:(l,g)=>l.replace(/(['"])[^'"]{4,}\1/,g==='Python'?'os.environ["SECRET"]':'process.env.SECRET')},
+{id:'catch',name:'Swallowed error',sev:'high',re:/catch\s*(\([^)]*\))?\s*\{\s*\}|except[^:]*:\s*pass/,msg:'An empty handler hides failures so bugs go unnoticed. Log or rethrow.',fix:(l,g)=>g==='Python'?l.replace(/pass\b/,'logging.exception("Unhandled error")'):l.replace(/\{\s*\}\s*$/,'{ logger.error(e); }')},
+{id:'html',name:'Unsafe innerHTML',sev:'high',langs:JS,re:/\.innerHTML\s*=/,msg:'Assigning innerHTML with user data allows XSS attacks.',fix:l=>l.replace('.innerHTML','.textContent')},
+{id:'any',name:'Avoid any type',sev:'medium',langs:['TypeScript'],re:/:\s*any\b/,msg:'any switches off type checking for that value.',fix:l=>l.replace(/:\s*any\b/,': unknown')},
+{id:'print',name:'Use logging, not print',sev:'low',langs:['Python'],re:/^\s*print\(/,msg:'print has no levels or timestamps. Use the logging module.',fix:l=>l.replace('print(','logging.info(')},
+{id:'none',name:'Compare None with is',sev:'medium',langs:['Python'],re:/[=!]=\s*None/,msg:'PEP 8 says to compare with None using is / is not.',fix:l=>l.replace(/==\s*None/,'is None').replace(/!=\s*None/,'is not None')},
+{id:'long',name:'Line too long',sev:'low',test:l=>l.length>110,msg:'Long lines are hard to read in diffs. Break it up.'}];
+const rules=()=>RULES.concat(mem.custom.flatMap(c=>{try{return[{id:c.id,name:c.name,sev:c.sev,re:new RegExp(c.pattern),msg:c.msg,custom:1}]}catch(e){return[]}}));
+const R=id=>rules().find(r=>r.id===id);
+const nm=id=>(R(id)||{name:id}).name;
+const SEV={high:0,medium:1,low:2};
+function detect(c){if(!c.trim())return'Unknown';
+ if(/^\s*(def |import \w+|from \w+ import|elif |print\()/m.test(c)||/:\s*$/m.test(c)&&!/[{;]/.test(c))return'Python';
+ if(/:\s*(string|number|boolean|any|unknown)\b|\binterface \w+|<\w+>\(|\benum \w+/.test(c))return'TypeScript';
+ if(/\b(function|const|let|var)\b|=>|console\./.test(c))return'JavaScript';return'Unknown'}
+const SJ=`var apiKey = "sk-live-93jf83jf";
+
+function getUser(id) {
+  if (id == null) return;
+  console.log("fetching user", id);
+  try {
+    return fetch("/api/users/" + id).then(r => r.json());
+  } catch (e) {}
+}
+
+// TODO clean this up
+function render(user) {
+  document.getElementById("name").innerHTML = user.name;
+  var greeting = "Hello, " + user.name + "! Welcome back to the dashboard, we have missed you since your last visit.";
+  return greeting;
+}`,SP=`import os
+password = "hunter2-prod"
+
+def load(path):
+    print("loading", path)
+    try:
+        data = open(path).read()
+    except:
+        pass
+    if data == None:
+        return eval(path)
+    # TODO handle bad input
+    return data`;
+const codeEl=$('#code'),gut=$('#gut');
+function upd(){gut.textContent=codeEl.value.split('\n').map((_,i)=>i+1).join('\n');const l=detect(codeEl.value);$('#lang').textContent='Language: '+(codeEl.value.trim()?l:'waiting')}
+codeEl.oninput=upd;codeEl.onscroll=()=>{gut.scrollTop=codeEl.scrollTop};
+$('#s-js').onclick=()=>{codeEl.value=SJ;upd()};$('#s-py').onclick=()=>{codeEl.value=SP;upd()};
+$('#clear').onclick=()=>{codeEl.value='';upd()};
+let cur=null,tab='f';
+function runReview(){
+ const code=codeEl.value;if(!code.trim())return toast('Paste some code first.');
+ const lang=detect(code),lines=code.split('\n'),fs=[];let skipped=0;
+ rules().forEach(r=>{if(r.langs&&lang!=='Unknown'&&!r.langs.includes(lang))return;
+  lines.forEach((ln,i)=>{if(!(r.test?r.test(ln):r.re.test(ln)))return;
+   if(mem.muted.includes(r.id)){skipped++;return}
+   fs.push({rid:r.id,line:i+1,text:ln,prior:mem.seen[r.id]||0,status:'open'})})});
+ fs.sort((a,b)=>{const p=x=>(mem.accepted[x.rid]||0)>=3?-1:0;return SEV[R(a.rid).sev]+p(a)-SEV[R(b.rid).sev]-p(b)||a.line-b.line});
+ [...new Set(fs.map(f=>f.rid))].forEach(id=>mem.seen[id]=(mem.seen[id]||0)+1);
+ const rv={id:'r'+Date.now(),date:new Date().toISOString(),lang,code,fs,skipped};
+ mem.reviews.unshift(rv);mem.reviews=mem.reviews.slice(0,30);save();cur=rv.id;tab='f';go('results');
+ toast(fs.length?fs.length+' issue(s) found.':'Clean review. Nice work.')}
+$('#run').onclick=runReview;
+const fixLine=(f,lang)=>{const r=R(f.rid);return r&&r.fix?r.fix(f.text,lang):undefined};
+function fixedCode(rv){return rv.code.split('\n').map((ln,i)=>{let c=ln;
+ for(const f of rv.fs.filter(x=>x.line===i+1&&x.status!=='rejected')){const r=R(f.rid);if(r&&r.fix&&c!==null){c=r.fix(c,rv.lang)}}return c})}
+const fmt=d=>new Date(d).toLocaleString([], {dateStyle:'medium',timeStyle:'short'});
+const cnt=(rv,s)=>rv.fs.filter(f=>R(f.rid)&&R(f.rid).sev===s).length;
+function feedback(i,type){const rv=mem.reviews.find(r=>r.id===cur),f=rv.fs[i];if(!f||f.status!=='open'&&type!=='mute')return;
+ const n=nm(f.rid);
+ if(type==='a'){f.status='accepted';mem.accepted[f.rid]=(mem.accepted[f.rid]||0)+1;mem.log.unshift({t:'a',rid:f.rid,text:f.text.trim(),d:new Date().toISOString()});toast('Learned: your team accepts "'+n+'" fixes.')}
+ if(type==='r'){f.status='rejected';mem.rejected[f.rid]=(mem.rejected[f.rid]||0)+1;mem.log.unshift({t:'r',rid:f.rid,text:f.text.trim(),d:new Date().toISOString()});
+  if(mem.rejected[f.rid]>=2&&!mem.muted.includes(f.rid)){mem.muted.push(f.rid);toast('Rejected twice. TCC will stop suggesting "'+n+'".')}else toast('Noted. Rejection saved to memory.')}
+ if(type==='mute'){if(!mem.muted.includes(f.rid))mem.muted.push(f.rid);rv.fs.forEach(x=>{if(x.rid===f.rid&&x.status==='open')x.status='rejected'});toast('Muted "'+n+'" for all future reviews.')}
+ mem.log=mem.log.slice(0,40);save();render()}
+function vDash(){const rs=mem.reviews,tot=rs.reduce((a,r)=>a+r.fs.length,0),A=Object.values(mem.accepted).reduce((a,b)=>a+b,0),Rj=Object.values(mem.rejected).reduce((a,b)=>a+b,0);
+ const sv={high:0,medium:0,low:0};rs.forEach(r=>['high','medium','low'].forEach(s=>sv[s]+=cnt(r,s)));const mx=Math.max(1,sv.high,sv.medium,sv.low);
+ const top=Object.entries(mem.seen).sort((a,b)=>b[1]-a[1])[0];const col={high:'--high',medium:'--medium',low:'--low'};
+ return`<h1 class="blue">Dashboard</h1><p class="sub">Your team's review health at a glance.</p>
+ <div class="grid g4"><div class="card"><div class="num blue">${rs.length}</div><div class="lbl">Reviews run</div></div><div class="card"><div class="num orange">${tot}</div><div class="lbl">Issues found</div></div><div class="card"><div class="num green">${A+Rj?Math.round(A/(A+Rj)*100)+'%':'-'}</div><div class="lbl">Fix acceptance rate</div></div><div class="card"><div class="num purple">${mem.custom.length+mem.muted.length+Object.keys(mem.accepted).length}</div><div class="lbl">Things TCC has learned</div></div></div><br>
+ <div class="grid g2"><div class="card"><h2>Issues by severity</h2>${['high','medium','low'].map(s=>`<div class="bar"><span>${s}</span><i style="width:${sv[s]/mx*70}%;background:var(${col[s]})"></i><b>${sv[s]}</b></div>`).join('')}
+ <p class="muted">${top?'Most recurring issue: <b>'+esc(nm(top[0]))+'</b> (in '+top[1]+' reviews).':'Run a review to see trends.'}</p></div>
+ <div class="card"><h2>Recent reviews</h2>${rs.length?`<ul class="l">${rs.slice(0,4).map(r=>`<li><span>${fmt(r.date)} · ${r.lang} · ${r.fs.length} issues</span><button data-open="${r.id}">Open</button></li>`).join('')}</ul>`:'<p class="empty">No reviews yet.</p>'}
+ <button class="btn p" data-v="workspace">&#43; Start a new review</button></div></div>`}
+function vRes(){const rv=mem.reviews.find(r=>r.id===cur);
+ if(!rv)return'<h1 class="orange">Review results</h1><p class="sub">No review selected.</p><button class="btn p" data-v="workspace">Go to workspace</button>';
+ const fc=fixedCode(rv),ol=rv.code.split('\n');
+ let body='';
+ if(tab==='f')body=rv.fs.length?rv.fs.map((f,i)=>{const r=R(f.rid)||{name:f.rid,sev:'low',msg:''};const nf=fixLine(f,rv.lang);const done=f.status!=='open';
+  return`<div class="card f ${r.sev}"><div class="t"><span>${esc(r.name)}</span><span><span class="badge ${r.sev}">${r.sev}</span> <span class="badge">line ${f.line}</span></span></div>
+  ${f.prior?`<span class="badge mem">Hindsight: seen in ${f.prior} earlier review${f.prior>1?'s':''}</span>`:''}${(mem.accepted[f.rid]||0)>=3?' <span class="badge mem">Team priority</span>':''}
+  <pre class="old">${esc(f.text.trim())}</pre><p><b>Why it matters:</b> ${esc(r.msg)}</p>
+  ${nf===undefined?'<p><b>Recommendation:</b> Needs a manual fix. See the explanation above.</p>':nf===null?'<p><b>Recommendation:</b> Delete this line.</p>':`<p><b>Recommended fix:</b></p><pre class="new">${esc(nf.trim())}</pre>`}
+  ${done?`<span class="badge ${f.status==='accepted'?'ok':''}">${f.status==='accepted'?'Accepted':'Rejected'}, saved to memory</span>`:`<div class="acts"><button class="a" data-fb="a" data-i="${i}">Accept fix</button><button class="r" data-fb="r" data-i="${i}">Reject</button><button class="m" data-fb="mute" data-i="${i}">Never suggest again</button></div>`}</div>`}).join(''):'<div class="card"><p class="empty">No issues found.</p></div>';
+ else body=`<div class="card"><div class="cmp"><div class="h">Original</div><div class="h">With recommended fixes</div>${ol.map((o,i)=>{const n=fc[i],ch=n!==o;return`<div class="${ch?'d':''}">${i+1}  ${esc(o)}</div><div class="${ch?'n':''}">${n===null?'(line removed)':esc(n)}</div>`}).join('')}</div></div>`;
+ return`<h1 class="orange">Review results</h1><p class="sub">${fmt(rv.date)} · ${rv.lang}${rv.skipped?' · '+rv.skipped+' suggestion(s) skipped because of team memory':''}</p>
+ <div class="row"><span class="badge high">${cnt(rv,'high')} high</span><span class="badge medium">${cnt(rv,'medium')} medium</span><span class="badge low">${cnt(rv,'low')} low</span></div>
+ <div class="tabs"><button data-tab="f" class="${tab==='f'?'on':''}">Findings and fixes</button><button data-tab="c" class="${tab==='c'?'on':''}">Code comparison</button></div>${body}`}
+function vHist(){const rs=mem.reviews;return`<h1 class="teal">Review history</h1><p class="sub">Every review is remembered so TCC can spot recurring mistakes.</p><div class="card">${rs.length?`<table><tr><th>Date</th><th>Language</th><th>Issues</th><th>High</th><th>Feedback</th><th></th></tr>${rs.map(r=>`<tr><td>${fmt(r.date)}</td><td>${r.lang}</td><td>${r.fs.length}</td><td>${cnt(r,'high')}</td><td>${r.fs.filter(f=>f.status==='accepted').length} accepted / ${r.fs.filter(f=>f.status==='rejected').length} rejected</td><td><button class="lnk" data-open="${r.id}">Open</button></td></tr>`).join('')}</table><br><button class="btn" id="clr-h">Clear history</button>`:'<p class="empty">No reviews yet.</p>'}</div>`}
+function vMem(){const names=Object.entries(mem.accepted),rej=Object.entries(mem.rejected);
+ const eff=[];Object.entries(mem.accepted).filter(([,n])=>n>=3).forEach(([id])=>eff.push(`"${esc(nm(id))}" is a team priority, so it is ranked higher in new reviews.`));
+ mem.muted.forEach(id=>eff.push(`"${esc(nm(id))}" is muted, so it no longer appears in new reviews.`));
+ Object.entries(mem.seen).filter(([,n])=>n>=2).forEach(([id,n])=>eff.push(`"${esc(nm(id))}" showed up in ${n} reviews, so it is flagged as recurring.`));
+ mem.custom.forEach(c=>eff.push(`Your rule "${esc(c.name)}" is checked on every review.`));
+ return`<h1 class="pink">Memory</h1><p class="sub">Everything TCC has learned about your team. It is saved in this browser.</p>
+ <div class="grid g2"><div class="card"><h2 class="blue">Team coding standards</h2><form id="rf" class="form"><input id="rn" placeholder="Rule name, e.g. No moment.js" required><input id="rp" placeholder="Pattern (regex), e.g. from .moment." required><input id="rm" placeholder="Message shown to developers" required><select id="rs"><option value="high">High</option><option value="medium" selected>Medium</option><option value="low">Low</option></select><button class="btn p">Save standard</button></form><p class="err" id="re"></p>
+ <ul class="l">${mem.custom.length?mem.custom.map(c=>`<li><span>${esc(c.name)} <span class="badge ${c.sev}">${c.sev}</span></span><button data-del="${c.id}">Remove</button></li>`).join(''):'<li class="muted">No custom standards yet.</li>'}</ul></div>
+ <div class="card"><h2 class="purple">How memory influences new reviews</h2>${eff.length?`<ul class="l">${eff.map(e=>`<li>${e}</li>`).join('')}</ul>`:'<p class="empty">Give feedback on findings and this list will grow.</p>'}</div>
+ <div class="card"><h2 class="green">Accepted fixes</h2><ul class="l">${names.length?names.map(([id,n])=>`<li><span>${esc(nm(id))}</span><b>${n}x</b></li>`).join(''):'<li class="muted">None yet.</li>'}</ul>
+ ${mem.log.filter(l=>l.t==='a').slice(0,3).map(l=>`<pre class="new">${esc(l.text)}</pre>`).join('')}</div>
+ <div class="card"><h2 class="orange">Rejected and muted suggestions</h2><ul class="l">${rej.map(([id,n])=>`<li><span>${esc(nm(id))}</span><b>${n}x rejected</b></li>`).join('')}${mem.muted.map(id=>`<li><span>${esc(nm(id))} (muted)</span><button data-unmute="${id}">Restore</button></li>`).join('')}${rej.length+mem.muted.length?'':'<li class="muted">None yet.</li>'}</ul></div></div><br><button class="btn" id="rst">Reset all memory</button>`}
+const VIEWS={dashboard:vDash,results:vRes,history:vHist,memory:vMem};
+function render(){const v=$('.view.on');if(!v)return;const n=v.id.slice(2);if(VIEWS[n])v.innerHTML=VIEWS[n]();v.querySelectorAll('.num').forEach(el=>{const t=parseInt(el.textContent);if(isNaN(t)||t<1)return;const s=el.textContent.includes('%');let i=0;const st=()=>{i++;el.textContent=Math.round(t*i/20)+(s?'%':'');if(i<20)requestAnimationFrame(st)};st()})}
+function go(n){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+n));document.querySelectorAll('.side button').forEach(b=>b.classList.toggle('on',b.dataset.v===n));render();$('#fab').classList.toggle('hide',n==='workspace');window.scrollTo(0,0)}
+document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ {const r=b.getBoundingClientRect(),s=document.createElement('span');s.className='rip';const z=Math.max(r.width,r.height)/2;s.style.cssText='width:'+z+'px;height:'+z+'px;left:'+(e.clientX-r.left-z/2)+'px;top:'+(e.clientY-r.top-z/2)+'px';b.appendChild(s);setTimeout(()=>s.remove(),600)}
+ if(d.v)go(d.v);else if(d.open){cur=d.open;tab='f';go('results')}else if(d.tab){tab=d.tab;render()}
+ else if(d.fb)feedback(+d.i,d.fb);
+ else if(d.del){mem.custom=mem.custom.filter(c=>c.id!==d.del);save();render()}
+ else if(d.unmute){mem.muted=mem.muted.filter(m=>m!==d.unmute);save();render();toast('Suggestion restored.')}
+ else if(b.id==='clr-h'){mem.reviews=[];cur=null;save();render()}
+ else if(b.id==='rst'&&confirm('Erase all reviews and memory?')){mem=emptyMem();cur=null;save();render()}});
+document.addEventListener('submit',e=>{if(e.target.id!=='rf')return;e.preventDefault();const p=$('#rp').value.trim();
+ try{new RegExp(p)}catch(x){$('#re').textContent='Invalid regex. Check brackets and escapes.';return}
+ mem.custom.push({id:'c'+Date.now(),name:$('#rn').value.trim(),pattern:p,msg:$('#rm').value.trim(),sev:$('#rs').value});save();render();toast('Standard saved. It applies to your next review.')});
+upd();go('dashboard');
+(async()=>{try{const r=await fetch('/api/state');if(!r.ok)throw new Error(r.status);const s=await r.json();
+ if(s.exists){mem=Object.assign(emptyMem(),s.state);try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}}
+ else if(mem.reviews.length||mem.custom.length||mem.muted.length||Object.keys(mem.accepted).length||Object.keys(mem.rejected).length)push()}
+ catch(e){toast('Working offline. Server not reachable.')}
+ render()})();
+})();
+</script>
+</body>
+</html>

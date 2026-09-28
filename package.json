@@ -1,0 +1,10 @@
+{
+  "name": "tcc-team-code-companion",
+  "version": "1.0.0",
+  "description": "TCC – Team Code Companion: web app with a persistent shared-memory backend",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node test.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.21.2" },
+  "license": "MIT"
+}
